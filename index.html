@@ -1051,7 +1051,7 @@ function openMemory(i) {
   const mNote  = document.getElementById('mImgNote');
 
   // Check if the thumbnail has a real image loaded
-  const hasPhoto = thumbImg && thumbImg.src && thumIng.src.length > 4 && !thumIng.src.endsWith('/') && thumIng.naturalWidth > 0;
+  const hasPhoto = thumbImg && thumbImg.getAttribute('src') && thumbImg.getAttribute('src') !== '';
 
   if (hasPhoto) {
     mPhoto.src = thumbImg.src;
