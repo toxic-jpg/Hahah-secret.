@@ -761,7 +761,7 @@
     <div class="cel-letter-card" id="celLetterCard">
       <div class="cel-letter-title">And one more thing… 🎀</div>
       <div class="cel-letter-sub">· · · moreeee · · ·</div>
-      <div class="cel-letter-body" id="celLetterBody"></div>
+      <div class="cel-letter-body" id="celLetterBody">You mean the world to me and I want to spend forever with you. Every moment counts. Thank you for being YOU 💕</div>
       <div class="cel-letter-sig">Habang buhay sa iyo ♡</div>
 
       <div class="cel-photo-strip">
@@ -815,6 +815,8 @@ Napaka saya kong akin ka at iyong iyo ako.
 Marami pang buwan at taon ang nag aantay sa ating dalawa mahal koo.
 
 Mahal na mahal kita ng higit pa sa nalalaman mo!!!!!`;
+
+const CELLEBRATE_LETTER = `Thank you for being the most amazing person in my life. You've brought so much joy and love into my world. I promise to cherish every moment with you, through all the ups and downs. You're my forever person. I love you more than words could ever express.`;
 
 const MEMORIES = [
   {
@@ -899,6 +901,7 @@ setInterval(updateCountdown, 1000);
 
 
 document.getElementById('letterBody').textContent = LETTER;
+document.getElementById('celLetterBody').textContent = CELLEBRATE_LETTER;
 
 function buildTicker() {
   const ticker = document.getElementById('reasonsTicker');
@@ -942,10 +945,8 @@ function goTo(n, direction) {
   const prev = document.getElementById('s' + currentScreen);
   const next = document.getElementById('s' + n);
 
-  // Determine slide direction
   const goingRight = direction === 'right' || (direction === undefined && n > currentScreen);
 
-  // Animate out
   prev.style.transition = 'transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.3s';
   prev.style.transform = goingRight ? 'translateX(-60px)' : 'translateX(60px)';
   prev.style.opacity = '0';
@@ -980,9 +981,83 @@ function goTo(n, direction) {
   document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n - 1));
   window.scrollTo(0, 0);
 
-  // Hide swipe hint after first swipe
   const hint = document.getElementById('swipeHint');
   if (hint) hint.style.opacity = '0';
+}
+
+// ===================== ENVELOPE & LETTER FUNCTIONS =====================
+
+function openEnvelope() {
+  const envelope = document.getElementById('envelope');
+  envelope.classList.add('open');
+  setTimeout(() => goTo(2), 800);
+}
+
+function openMemory(index) {
+  const mem = MEMORIES[index];
+  document.getElementById('mImg').style.background = mem.bgStyle;
+  document.getElementById('mTitle').textContent = mem.title;
+  document.getElementById('mText').textContent = mem.text;
+  
+  const photoInput = document.getElementById('mPhoto');
+  photoInput.src = '';
+  photoInput.style.display = 'none';
+  
+  const photoImg = document.getElementById('mPhoto');
+  photoImg.onload = () => { photoImg.style.display = 'block'; };
+  
+  document.getElementById('memModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('memModal').classList.remove('show');
+}
+
+function closeMemory(event) {
+  if (event.target.id === 'memModal') closeModal();
+}
+
+function triggerPhotoUpload() {
+  document.getElementById('photoInput').click();
+}
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById('mPhoto');
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function celebrate() {
+  document.getElementById('celebrateOverlay').classList.add('show');
+  
+  for (let i = 0; i < 50; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.backgroundColor = ['#a78bfa', '#60a5fa', '#c4b5fd', '#93c5fd'][Math.floor(Math.random() * 4)];
+    piece.style.animationDelay = Math.random() * 0.5 + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 2500);
+  }
+}
+
+function openCelEnvelope() {
+  const envelope = document.getElementById('celEnvelope');
+  envelope.classList.add('open');
+  setTimeout(() => {
+    document.getElementById('celLetterCard').classList.add('show');
+  }, 600);
+}
+
+function closeCelebrateBtn() {
+  document.getElementById('celebrateOverlay').classList.remove('show');
 }
 
 // ===================== SWIPE GESTURES =====================
@@ -991,7 +1066,6 @@ let swipeStartY = 0;
 let swipeLocked = false;
 
 document.addEventListener('touchstart', (e) => {
-  // Don't swipe if overlay is open or touching a modal/ticker
   if (document.getElementById('celebrateOverlay').classList.contains('show')) return;
   if (document.getElementById('memModal').classList.contains('show')) return;
   swipeStartX = e.touches[0].clientX;
@@ -1000,101 +1074,26 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 document.addEventListener('touchmove', (e) => {
-  if (document.getElementById('celebrateOverlay').classList.contains('show')) return;
-  if (document.getElementById('memModal').classList.contains('show')) return;
   if (swipeLocked) return;
-
-  const moveX = e.touches[0].clientX;
-  const moveY = e.touches[0].clientY;
-  const diffX = moveX - swipeStartX;
-  const diffY = moveY - swipeStartY;
-
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 30) {
-    swipeLocked = true;
-    if (diffX > 0) goTo(currentScreen - 1, 'left');
-    else goTo(currentScreen + 1, 'right');
-  }
 }, { passive: true });
 
-// Navigate with dots
-document.querySelectorAll('.dot').forEach((dot, i) => {
-  dot.addEventListener('click', () => goTo(i + 1));
-});
-
-// Modal functions
-function openMemory(idx) {
-  const mem = MEMORIES[idx];
-  document.getElementById('mTitle').textContent = mem.title;
-  document.getElementById('mText').textContent = mem.text;
-  document.getElementById('memModal').classList.add('show');
-}
-
-function closeModal() {
-  document.getElementById('memModal').classList.remove('show');
-}
-
-function closeMemory(e) {
-  if (e.target === document.getElementById('memModal')) closeModal();
-}
-
-function triggerPhotoUpload() {
-  document.getElementById('photoInput').click();
-}
-
-function handlePhotoUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    const img = document.getElementById('mPhoto');
-    img.src = event.target.result;
-    img.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-// Envelope animation
-function openEnvelope() {
-  const envelope = document.getElementById('envelope');
-  envelope.classList.toggle('open');
-}
-
-// Celebrate overlay
-function celebrate() {
-  const overlay = document.getElementById('celebrateOverlay');
-  overlay.classList.add('show');
-  confetti();
-}
-
-function closeCelebrateBtn() {
-  document.getElementById('celebrateOverlay').classList.remove('show');
-}
-
-function openCelEnvelope() {
-  const envelope = document.getElementById('celEnvelope');
-  envelope.classList.toggle('open');
-  if (envelope.classList.contains('open')) {
-    setTimeout(() => {
-      const letterCard = document.getElementById('celLetterCard');
-      letterCard.classList.add('show');
-      const content = "I love you so much and I never want this moment to stop. You make me the happiest person in the world, and every second with you is precious. I can't wait to spend more months and years with you, creating more beautiful memories together. Thank you for being the most amazing person ever. 💕";
-      document.getElementById('celLetterBody').textContent = content;
-    }, 600);
+document.addEventListener('touchend', (e) => {
+  if (document.getElementById('celebrateOverlay').classList.contains('show')) return;
+  if (document.getElementById('memModal').classList.contains('show')) return;
+  
+  const swipeEndX = e.changedTouches[0].clientX;
+  const swipeEndY = e.changedTouches[0].clientY;
+  const diffX = swipeStartX - swipeEndX;
+  const diffY = swipeStartY - swipeEndY;
+  
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (Math.abs(diffX) > 50) {
+      swipeLocked = true;
+      if (diffX > 0) goTo(currentScreen + 1, 'right');
+      else goTo(currentScreen - 1, 'left');
+    }
   }
-}
-
-// Confetti animation
-function confetti() {
-  for (let i = 0; i < 50; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = Math.random() * 100 + 'vw';
-    piece.style.backgroundColor = ['#a78bfa', '#60a5fa', '#c4b5fd', '#93c5fd', '#7c3aed'][Math.floor(Math.random() * 5)];
-    document.body.appendChild(piece);
-    setTimeout(() => piece.remove(), 2500);
-  }
-}
+}, { passive: true });
 </script>
-
 </body>
 </html>
