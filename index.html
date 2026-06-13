@@ -173,6 +173,8 @@
     box-shadow: 0 8px 40px rgba(109,40,217,0.15);
     position: relative;
     animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    max-height: 80vh;
+    overflow-y: auto;
   }
   @keyframes cardIn {
     from { opacity:0; transform: translateY(40px) scale(0.95); }
@@ -186,7 +188,7 @@
   }
   .letter-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--rose); margin-bottom: 4px; }
   .letter-subtitle { font-size: 0.82rem; color: #7c3aed; margin-bottom: 20px; letter-spacing: 0.08em; }
-  .letter-body { font-size: 0.97rem; line-height: 1.85; color: #3b0764; text-align: left; white-space: pre-line; }
+  .letter-body { font-size: 0.97rem; line-height: 1.85; color: #3b0764; text-align: left; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; }
   .letter-sig { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--rose); margin-top: 18px; text-align: right; }
 
   /* SCREEN 3 — MEMORIES */
@@ -223,6 +225,11 @@
     position: relative;
     overflow: hidden;
   }
+  .mem-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .mem-photo .ph-emoji { font-size: 2rem; z-index: 1; }
   .mem-photo .ph-label {
     font-size: 0.6rem; color: #5b21b6; z-index: 1;
@@ -232,7 +239,7 @@
 
   .mem-info { padding: 10px 12px 12px; }
   .mem-title { font-weight: 700; font-size: 0.82rem; color: var(--rose); }
-  .mem-text { font-size: 0.75rem; color: #3b0764; margin-top: 3px; line-height: 1.45; }
+  .mem-text { font-size: 0.75rem; color: #3b0764; margin-top: 3px; line-height: 1.45; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; }
 
   /* SCREEN 4 — INFINITE REASONS */
   #s4 {
@@ -371,6 +378,8 @@
     max-width: 320px; width: 100%;
     animation: cardIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
     position: relative; overflow: hidden;
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .modal-img {
     width: 100%; aspect-ratio: 16/9;
@@ -379,6 +388,12 @@
     align-items: center; justify-content: center;
     position: relative; overflow: hidden;
     cursor: pointer;
+  }
+  .modal-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
   }
   .modal-img::after {
     content: '';
@@ -390,6 +405,7 @@
       transparent 2px,
       transparent 12px
     );
+    z-index: 2;
   }
   .modal-img .big-emoji { font-size: 3.5rem; z-index: 1; }
   .modal-img .img-note {
@@ -406,7 +422,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   .m-title { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--rose); margin-bottom:8px; }
-  .m-text { font-size:0.9rem; color:#3b0764; line-height:1.7; word-wrap: break-word; overflow-wrap: break-word; }
+  .m-text { font-size:0.9rem; color:#3b0764; line-height:1.7; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; }
 
   /* ---- CELEBRATE LETTER OVERLAY ---- */
   .celebrate-overlay {
@@ -524,6 +540,8 @@
     position: relative;
     display: none;
     animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    max-height: 60vh;
+    overflow-y: auto;
   }
   .cel-letter-card.show { display: block; }
   .cel-letter-card::before {
@@ -541,7 +559,7 @@
   }
   .cel-letter-body {
     font-size: 0.93rem; line-height: 1.85; color: #3b0764;
-    white-space: pre-line; text-align: left;
+    white-space: pre-wrap; text-align: left; word-wrap: break-word; overflow-wrap: break-word;
   }
   .cel-letter-sig {
     font-family: 'Playfair Display', serif; font-style: italic;
@@ -571,6 +589,12 @@
     align-items: center; justify-content: center;
     position: relative; overflow: hidden;
     box-shadow: 0 4px 14px rgba(109,40,217,0.18);
+  }
+  .cel-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
   }
   .cel-photo::after {
     content: '';
@@ -659,8 +683,8 @@
 
   <div class="cards-grid">
     <div class="mem-card" onclick="openMemory(0)">
-      <div class="mem-photo" id="thumb-0" style="position:relative;overflow:hidden;aspect-ratio:4/3;width:100%;">
-        <img id="thumb-img-0" src="7.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div class="mem-photo">
+        <img id="thumb-img-0" src="7.jpg" alt="When We Met">
       </div>
       <div class="mem-info">
         <div class="mem-title">When We Met</div>
@@ -668,8 +692,8 @@
       </div>
     </div>
     <div class="mem-card" onclick="openMemory(1)">
-      <div class="mem-photo" id="thumb-1" style="position:relative;overflow:hidden;aspect-ratio:4/3;width:100%;">
-        <img id="thumb-img-1" src="19.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div class="mem-photo">
+        <img id="thumb-img-1" src="19.jpg" alt="Our Dates">
       </div>
       <div class="mem-info">
         <div class="mem-title">Our Dates</div>
@@ -677,8 +701,8 @@
       </div>
     </div>
     <div class="mem-card" onclick="openMemory(2)">
-      <div class="mem-photo" id="thumb-2" style="position:relative;overflow:hidden;aspect-ratio:4/3;width:100%;">
-        <img id="thumb-img-2" src="27.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div class="mem-photo">
+        <img id="thumb-img-2" src="27.jpg" alt="Late Night Talks">
       </div>
       <div class="mem-info">
         <div class="mem-title">Late Night Talks</div>
@@ -686,8 +710,8 @@
       </div>
     </div>
     <div class="mem-card" onclick="openMemory(3)">
-      <div class="mem-photo" id="thumb-3" style="position:relative;overflow:hidden;aspect-ratio:4/3;width:100%;">
-        <img id="thumb-img-3" src="30.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div class="mem-photo">
+        <img id="thumb-img-3" src="30.jpg" alt="Tampuhan">
       </div>
       <div class="mem-info">
         <div class="mem-title">Tampuhan</div>
@@ -761,23 +785,23 @@
     <div class="cel-letter-card" id="celLetterCard">
       <div class="cel-letter-title">And one more thing… 🎀</div>
       <div class="cel-letter-sub">· · · moreeee · · ·</div>
-      <div class="cel-letter-body" id="celLetterBody">You mean the world to me and I want to spend forever with you. Every moment counts. Thank you for being YOU 💕</div>
+      <div class="cel-letter-body" id="celLetterBody">Thank you for being the most amazing person in my life. You've brought so much joy and love into my world. I promise to cherish every moment with you, through all the ups and downs. You're my forever person. I love you more than words could ever express.</div>
       <div class="cel-letter-sig">Habang buhay sa iyo ♡</div>
 
       <div class="cel-photo-strip">
         <div class="cel-photo-strip-label">📷 our favourite moments</div>
         <div class="cel-photos-grid">
           <div class="cel-photo">
-            <img src="12.jpg" style="width: 100%;aspect-ratio:1/1;object-fit:cover;border-radius: 14px;">
+            <img src="12.jpg" alt="moment">
           </div>
           <div class="cel-photo">
-            <img src="11.jpg" style="width: 100%;aspect-ratio:1/1;object-fit:cover;border-radius: 14px;">
+            <img src="11.jpg" alt="moment">
           </div>
           <div class="cel-photo">
-            <img src="6.jpg" style="width: 100%;aspect-ratio:1/1;object-fit:cover;border-radius: 14px;">
+            <img src="6.jpg" alt="moment">
           </div>
           <div class="cel-photo">
-            <img src="21.jpg" style="width: 100%;aspect-ratio:1/1;object-fit:cover;border-radius: 14px;">
+            <img src="21.jpg" alt="moment">
           </div>
         </div>
       </div>
@@ -791,7 +815,7 @@
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-img" id="mImg" onclick="triggerPhotoUpload()" style="cursor:pointer;">
-      <img id="mPhoto" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">
+      <img id="mPhoto" src="" alt="" style="">
     </div>
     <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
     <div class="modal-content">
@@ -823,25 +847,29 @@ const MEMORIES = [
     emoji: "🌅",
     bgStyle: "background: linear-gradient(135deg, #c4b5fd, #93c5fd)",
     title: "When We Met",
-    text: "Yong time na nagkita tayong muli is very unexpected na dko akalain na mahal na mahal ako ng panginoon para bigyan ng isang biyaya na magpapabago ng buhay ko habang buhay!!!"
+    text: "Yong time na nagkita tayong muli is very unexpected na dko akalain na mahal na mahal ako ng panginoon para bigyan ng isang biyaya na magpapabago ng buhay ko habang buhay!!!",
+    img: "7.jpg"
   },
   {
     emoji: "🍜",
     bgStyle: "background: linear-gradient(135deg, #93c5fd, #a78bfa)",
     title: "Our Dates",
-    text: "Every dates Every gala natin always becomes my favourite days, lagi tayo may way para ma higitan mga nagagawa natin sa mga gala and dates natin, super thankful ako na lagi mo akong nil[...]"
+    text: "Every dates Every gala natin always becomes my favourite days, lagi tayo may way para ma higitan mga nagagawa natin sa mga gala and dates natin, super thankful ako na lagi mo akong nil",
+    img: "19.jpg"
   },
   {
     emoji: "💬",
     bgStyle: "background: linear-gradient(135deg, #bfdbfe, #c4b5fd)",
     title: "Late Night Talks",
-    text: "Sa mga gabi nating paulit ulit na nag uusap tila walang kasawaan na para bang mayroon hindi na uubos ung mapag uusapan sa itong part kita lalong nakilala ng sobra at sobrang naging mas[...]"
+    text: "Sa mga gabi nating paulit ulit na nag uusap tila walang kasawaan na para bang mayroon hindi na uubos ung mapag uusapan sa itong part kita lalong nakilala ng sobra at sobrang naging mas",
+    img: "27.jpg"
   },
   {
     emoji: "🌙",
     bgStyle: "background: linear-gradient(135deg, #1e1b4b, #312e81)",
     title: "Tampuhan",
-    text: "Lahat ng nangyayare sa akin ngayon ay sobrang nakaka panibago ngunit nag eenjoy ako dahil na eexplore ko to ng kasama ka, yung mga tampuhan na laging may natitira satin na umiiyak sa u[...]"
+    text: "Lahat ng nangyayare sa akin ngayon ay sobrang nakaka panibago ngunit nag eenjoy ako dahil na eexplore ko to ng kasama ka, yung mga tampuhan na laging may natitira satin na umiiyak sa u",
+    img: "30.jpg"
   }
 ];
 
@@ -898,7 +926,6 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
 
 document.getElementById('letterBody').textContent = LETTER;
 document.getElementById('celLetterBody').textContent = CELLEBRATE_LETTER;
@@ -995,16 +1022,15 @@ function openEnvelope() {
 
 function openMemory(index) {
   const mem = MEMORIES[index];
-  document.getElementById('mImg').style.background = mem.bgStyle;
+  const photoImg = document.getElementById('mPhoto');
+  const mImgDiv = document.getElementById('mImg');
+  
   document.getElementById('mTitle').textContent = mem.title;
   document.getElementById('mText').textContent = mem.text;
   
-  const photoInput = document.getElementById('mPhoto');
-  photoInput.src = '';
-  photoInput.style.display = 'none';
-  
-  const photoImg = document.getElementById('mPhoto');
-  photoImg.onload = () => { photoImg.style.display = 'block'; };
+  mImgDiv.style.background = mem.bgStyle;
+  photoImg.src = mem.img;
+  photoImg.style.display = 'block';
   
   document.getElementById('memModal').classList.add('show');
 }
