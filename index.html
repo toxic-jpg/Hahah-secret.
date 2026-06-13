@@ -406,7 +406,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   .m-title { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--rose); margin-bottom:8px; }
-  .m-text { font-size:0.9rem; color:#3b0764; line-height:1.7; }
+  .m-text { font-size:0.9rem; color:#3b0764; line-height:1.7; word-wrap: break-word; overflow-wrap: break-word; }
 
   /* ---- CELEBRATE LETTER OVERLAY ---- */
   .celebrate-overlay {
@@ -1000,98 +1000,70 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 document.addEventListener('touchmove', (e) => {
-  if (!swipeStartX || swipeLocked) return;
-  const dx = e.touches[0].clientX - swipeStartX;
-  const dy = e.touches[0].clientY - swipeStartY;
-  if (!swipeLocked && Math.abs(dy) > Math.abs(dx)) {
+  if (document.getElementById('celebrateOverlay').classList.contains('show')) return;
+  if (document.getElementById('memModal').classList.contains('show')) return;
+  if (swipeLocked) return;
+
+  const moveX = e.touches[0].clientX;
+  const moveY = e.touches[0].clientY;
+  const diffX = moveX - swipeStartX;
+  const diffY = moveY - swipeStartY;
+
+  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 30) {
     swipeLocked = true;
-    return;
-  }
-  if (Math.abs(dx) > 40) {
-    swipeLocked = true;
-    if (dx > 0) goTo(currentScreen - 1, 'left');
+    if (diffX > 0) goTo(currentScreen - 1, 'left');
     else goTo(currentScreen + 1, 'right');
   }
 }, { passive: true });
 
-document.addEventListener('touchend', () => {
-  swipeStartX = 0;
-}, { passive: true });
+// Navigate with dots
+document.querySelectorAll('.dot').forEach((dot, i) => {
+  dot.addEventListener('click', () => goTo(i + 1));
+});
 
-// ===================== MEMORY MODAL =====================
-function openMemory(index) {
-  const mem = MEMORIES[index];
+// Modal functions
+function openMemory(idx) {
+  const mem = MEMORIES[idx];
   document.getElementById('mTitle').textContent = mem.title;
   document.getElementById('mText').textContent = mem.text;
-  
-  // Update image based on index
-  const imgSrc = ['7.jpg', '19.jpg', '27.jpg', '30.jpg'][index];
-  const mImg = document.getElementById('mImg');
-  const mPhoto = document.getElementById('mPhoto');
-  
-  // Try to load the image, fall back to emoji if not found
-  mPhoto.src = imgSrc;
-  mPhoto.onerror = () => {
-    mPhoto.style.display = 'none';
-    mImg.innerHTML = `<div style="font-size:3.5rem;z-index:1;">${mem.emoji}</div><div style="font-size:0.65rem;color:#5b21b6;z-index:1;margin-top:6px;letter-spacing:0.08em;font-weight:700;text-transform:uppercase;">MEMORY</div>`;
-  };
-  mPhoto.onload = () => {
-    mPhoto.style.display = 'block';
-  };
-  
   document.getElementById('memModal').classList.add('show');
-}
-
-function closeMemory(event) {
-  if (event && event.target.id !== 'memModal') return;
-  closeModal();
 }
 
 function closeModal() {
   document.getElementById('memModal').classList.remove('show');
 }
 
+function closeMemory(e) {
+  if (e.target === document.getElementById('memModal')) closeModal();
+}
+
 function triggerPhotoUpload() {
   document.getElementById('photoInput').click();
 }
 
-function handlePhotoUpload(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const mPhoto = document.getElementById('mPhoto');
-      mPhoto.src = e.target.result;
-      mPhoto.style.display = 'block';
-      const mImg = document.getElementById('mImg');
-      mImg.innerHTML = '';
-      mImg.appendChild(mPhoto);
-    };
-    reader.readAsDataURL(file);
-  }
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = document.getElementById('mPhoto');
+    img.src = event.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
 }
 
-// ===================== ENVELOPE =====================
+// Envelope animation
 function openEnvelope() {
-  const env = document.getElementById('envelope');
-  env.classList.add('open');
-  setTimeout(() => goTo(2), 800);
+  const envelope = document.getElementById('envelope');
+  envelope.classList.toggle('open');
 }
 
-// ===================== CELEBRATE =====================
-const CELEBRATION_LETTER = `Salamat for being my person.
-
-You made this month feel like forever, in the best way possible.
-
-Every moment with you—from the silly jokes to the deep talks, from lazy mornings to exciting adventures—it's all been so wonderfully perfect.
-
-I hope these are just the first of many monthsaries we'll celebrate together. I can't wait to build more memories with you, love.
-
-You're it for me. Always will be.`;
-
+// Celebrate overlay
 function celebrate() {
-  document.getElementById('celebrateOverlay').classList.add('show');
-  document.getElementById('celLetterBody').textContent = CELEBRATION_LETTER;
+  const overlay = document.getElementById('celebrateOverlay');
+  overlay.classList.add('show');
+  confetti();
 }
 
 function closeCelebrateBtn() {
@@ -1099,28 +1071,30 @@ function closeCelebrateBtn() {
 }
 
 function openCelEnvelope() {
-  const env = document.getElementById('celEnvelope');
-  env.classList.add('open');
-  setTimeout(() => {
-    document.getElementById('celLetterCard').classList.add('show');
-  }, 500);
+  const envelope = document.getElementById('celEnvelope');
+  envelope.classList.toggle('open');
+  if (envelope.classList.contains('open')) {
+    setTimeout(() => {
+      const letterCard = document.getElementById('celLetterCard');
+      letterCard.classList.add('show');
+      const content = "I love you so much and I never want this moment to stop. You make me the happiest person in the world, and every second with you is precious. I can't wait to spend more months and years with you, creating more beautiful memories together. Thank you for being the most amazing person ever. 💕";
+      document.getElementById('celLetterBody').textContent = content;
+    }, 600);
+  }
 }
 
-function throwConfetti() {
+// Confetti animation
+function confetti() {
   for (let i = 0; i < 50; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
     piece.style.left = Math.random() * 100 + 'vw';
-    piece.style.background = ['#a78bfa', '#60a5fa', '#c4b5fd', '#93c5fd'][Math.floor(Math.random() * 4)];
+    piece.style.backgroundColor = ['#a78bfa', '#60a5fa', '#c4b5fd', '#93c5fd', '#7c3aed'][Math.floor(Math.random() * 5)];
     document.body.appendChild(piece);
     setTimeout(() => piece.remove(), 2500);
   }
 }
-
-// Close overlay when celebration button is clicked
-document.getElementById('celebrateOverlay')?.addEventListener('click', (e) => {
-  if (e.target.id === 'celebrateOverlay') closeCelebrateBtn();
-});
 </script>
+
 </body>
 </html>
